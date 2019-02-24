@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ThreadExamples</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<h2>Valet Attendant Services</h2>
+
+<!-- Trigger/Open The Modal -->
+<table>
+    <tr>
+        <td>
+            <button id="ExecutorExample" class="modalBtn">Executor Service Example</br>With Atomic Variable</button>
+        </td>
+        <td>
+            <button id="RunnableThreadExample" class="modalBtn">Runnable Example</br>With Atomic Variable</button>
+        </td>
+    </tr>
+</table>
+
+<p>
+    Please enter a number threads (MAX 99)
+    <input type="text" name="numOfThreads" id="numOfThreads" value="2" pattern="[0-9][0-9]{0,1}"></br>
+    Please enter a number of iterations per thread (MAX 10,000,000)
+    <input type="text" name="numOfIterations" id="numOfIterations" value="10000" pattern="[0-9]{1,7}0{0,1}"></br>
+</p>
+
+</p>
+
+</div>
+<script type="text/javascript">
+    $(function() {
+       $('.modalBtn').on('click', function() {
+           console.log("Btn Click: " + $(this).attr('id'));
+           getResponse($(this).attr('id'));
+       });
+    });
+    function getResponse(getURL) {
+        var txtToDisplay=null;
+        console.log("Going to post request to: " + getURL);
+        $.ajax({
+            type: 'post',
+            url: getURL,
+            data: {
+                "numOfThreads": document.getElementById("numOfThreads").value,
+                "numOfIterations": document.getElementById("numOfIterations").value
+            },
+            dataType: 'json'
+        })
+            .done(function (res, req, status, err) {
+                console.log("Completed... Received: " + res, req, status, err);
+                console.log(res.AtomicValue);
+                console.log(res.NonAtomicValue);
+                txtToDisplay = "The response from the server: </br>" +
+                    res.Summary + "</br>" + res.AtomicValue + "</br>" + res.NonAtomicValue;
+                updPage(txtToDisplay);
+            })
+            .fail(function (res, req, status, err) {
+                console.log("There was a problem: ", res, req, status, err);
+                txtToDisplay = "There was no valid response!";
+            });
+        updPage(txtToDisplay);
+
+    }
+
+    function updPage(valToDisp) {
+        console.log(valToDisp);
+        $('#responseData').html(valToDisp);
+    }
+</script>
+
+<div id="responseData" class="bottom"></div>
+</body>
+</html>
